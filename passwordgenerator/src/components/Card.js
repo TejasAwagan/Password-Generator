@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import "./card.css";
 
 function Card() {
@@ -6,6 +6,7 @@ function Card() {
   const [number, setNumber] = useState(false);
   const [character, setCharacter] = useState(false);
   const [length, setLength] = useState(8);
+  const passwordRef = useRef(null);
 
   const passwordGenerator = useCallback(() => {
     let pass = "";
@@ -25,7 +26,12 @@ function Card() {
 
     setPassword(pass);    
 
-  }, [number, character, length]);
+  }, [number, character, length,setPassword]);
+
+  const passCopyToClipboard = useCallback(()=>{
+    passwordRef.current?.select();
+    window.navigator.clipboard.writeText(password);
+  },[password])
 
   useEffect(()=>{
     passwordGenerator();
@@ -44,8 +50,8 @@ function Card() {
     <div className="card-container">
       <h1 className="heading">Password Generator</h1>
       <div className="inputField">
-        <input type="text" className="input" value={password} readOnly />
-        <button className="copy-btn">Copy</button>
+        <input type="text" className="input" value={password} ref={passwordRef} readOnly />
+        <button className="copy-btn" onClick={passCopyToClipboard}>Copy</button>
       </div>
       <div className="footer-element">
         <input
